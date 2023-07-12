@@ -32,16 +32,26 @@ const createUserCollection = async () => {
 export const User = {
   createUserCollection,
   createUser: async (user) => {
-    const database = getDatabase();
-    const userCollection = database.collection(userCollectionName);
-    await userCollection.insertOne(user);
+    try {
+      const database = await getDatabase();
+      const userCollection = await database.collection(userCollectionName);
+      await userCollection.insertOne(user);
+    } catch (error) {
+      console.error("Error creating user:", error);
+      throw new Error("Failed to create user");
+    }
   },
   getUserByEmail: async (email) => {
-    const database = await getDatabase();
-    const userCollection = database.collection(userCollectionName);
+    try {
+      const database = await getDatabase();
+      const userCollection = database.collection(userCollectionName);
 
-    const user = await userCollection.findOne({ user_email: email });
-    return user;
+      const user = await userCollection.findOne({ user_email: email });
+      return user;
+    } catch (error) {
+      console.error("Error retrieving user by email:", error);
+      throw new Error("Failed to retrieve user by email");
+    }
   },
 };
 
