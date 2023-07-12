@@ -1,0 +1,316 @@
+openapi: 3.0.0
+info:
+  title: Car Dealership API
+  version: 1.0.0
+paths:
+  /api/admins:
+    get:
+      summary: Get all admins
+      responses:
+        "200":
+          description: OK
+    post:
+      summary: Create an admin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                adminId:
+                  type: string
+                password:
+                  type: string
+      responses:
+        "200":
+          description: OK
+  /api/admins/{adminId}:
+    get:
+      summary: Get an admin by ID
+      parameters:
+        - in: path
+          name: adminId
+          schema:
+            type: string
+          required: true
+      responses:
+        "200":
+          description: OK
+        "404":
+          description: Admin not found
+    put:
+      summary: Update an admin
+      parameters:
+        - in: path
+          name: adminId
+          schema:
+            type: string
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                password:
+                  type: string
+      responses:
+        "200":
+          description: OK
+    delete:
+      summary: Delete an admin
+      parameters:
+        - in: path
+          name: adminId
+          schema:
+            type: string
+          required: true
+      responses:
+        "200":
+          description: OK
+  /api/users/register:
+    post:
+      summary: Register a new user
+      description: Create a new user with the provided information
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_email:
+                  type: string
+                  format: email
+                  description: Email address of the user
+                user_id:
+                  type: string
+                  description: User ID
+                user_location:
+                  type: string
+                  description: User location
+                password:
+                  type: string
+                  description: User password
+                user_info:
+                  type: object
+                  description: Additional user information
+                vehicle_info:
+                  type: array
+                  items:
+                    type: string
+                  description: List of vehicle information
+              example:
+                user_email: example@example.com
+                user_id: "123456789"
+                user_location: Sample Location
+                password: password123
+                user_info:
+                  firstName: John
+                  lastName: Doe
+                vehicle_info:
+                  - vehicle1
+                  - vehicle2
+      responses:
+        "201":
+          description: User registered successfully
+        "500":
+          description: Internal server error
+  /api/users/cars:
+    get:
+      summary: Get all cars
+      responses:
+        "200":
+          description: OK
+  /api/users/dealerships/{dealershipId}/cars:
+    get:
+      summary: Get all cars in a dealership
+      parameters:
+        - in: path
+          name: dealershipId
+          schema:
+            type: string
+          required: true
+      responses:
+        "200":
+          description: OK
+  /api/users/cars/{carId}/dealerships:
+    get:
+      summary: Get dealerships with a certain car
+      parameters:
+        - in: path
+          name: carId
+          schema:
+            type: string
+          required: true
+      responses:
+        "200":
+          description: OK
+  /api/users/vehicles:
+    get:
+      summary: Get all vehicles owned by the user
+      responses:
+        "200":
+          description: OK
+  /api/users/dealerships/range/{userLocation}:
+    get:
+      summary: Get dealerships within a certain range based on user location
+      parameters:
+        - in: path
+          name: userLocation
+          schema:
+            type: string
+          required: true
+      responses:
+        "200":
+          description: OK
+  /api/users/cars/{carId}/deals:
+    get:
+      summary: Get all deals on a certain car
+      parameters:
+        - in: path
+          name: carId
+          schema:
+            type: string
+          required: true
+      responses:
+        "200":
+          description: OK
+  /api/users/dealerships/{dealershipId}/deals:
+    get:
+      summary: Get all deals from a certain dealership
+      parameters:
+        - in: path
+          name: dealershipId
+          schema:
+            type: string
+          required: true
+      responses:
+        "200":
+          description: OK
+  /api/users/cars/{carId}/buy:
+    post:
+      summary: Allow user to buy a car after a deal is made
+      parameters:
+        - in: path
+          name: carId
+          schema:
+            type: string
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: string
+      responses:
+        "200":
+          description: OK
+  /api/dealerships/cars:
+    get:
+      summary: Get all cars
+      responses:
+        "200":
+          description: OK
+    post:
+      summary: Add cars to dealership
+      parameters:
+        - in: path
+          name: dealershipId
+          schema:
+            type: string
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                car:
+                  type: object
+                  properties:
+                    car_id:
+                      type: string
+                    type:
+                      type: string
+                    name:
+                      type: string
+                    model:
+                      type: string
+      responses:
+        "200":
+          description: OK
+  /api/dealerships/deals:
+    get:
+      summary: Get deals provided by dealership
+      parameters:
+        - in: path
+          name: dealershipId
+          schema:
+            type: string
+          required: true
+      responses:
+        "200":
+          description: OK
+    post:
+      summary: Add deals to dealership
+      parameters:
+        - in: path
+          name: dealershipId
+          schema:
+            type: string
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                deal:
+                  type: object
+                  properties:
+                    deal_id:
+                      type: string
+                    car_id:
+                      type: string
+      responses:
+        "200":
+          description: OK
+  /api/dealerships/sold-vehicles:
+    get:
+      summary: Get vehicles sold by dealership
+      parameters:
+        - in: path
+          name: dealershipId
+          schema:
+            type: string
+          required: true
+      responses:
+        "200":
+          description: OK
+    post:
+      summary: Add new vehicle to the list of sold vehicles
+      parameters:
+        - in: path
+          name: dealershipId
+          schema:
+            type: string
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                vehicle:
+                  type: object
+                  properties:
+                    vehicle_id:
+                      type: string
+                    car_id:
+                      type: string
+      responses:
+        "200":
+          description: OK

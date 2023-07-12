@@ -36,6 +36,13 @@ export const User = {
     const userCollection = database.collection(userCollectionName);
     await userCollection.insertOne(user);
   },
+  getUserByEmail: async (email) => {
+    const database = await getDatabase();
+    const userCollection = database.collection(userCollectionName);
+
+    const user = await userCollection.findOne({ user_email: email });
+    return user;
+  },
 };
 
 export default User;
