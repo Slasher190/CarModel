@@ -1,6 +1,7 @@
 import { MongoClient } from "mongodb";
-
-const uri = process.env.MONGO_URI || "mongodb://127.0.0.1:27017";
+import dotenv from "dotenv";
+dotenv.config();
+const uri = process.env.MONGO_URI;
 const dbName = "CarDeal";
 
 const client = new MongoClient(uri, { useUnifiedTopology: true });

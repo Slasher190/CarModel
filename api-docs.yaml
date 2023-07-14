@@ -3,13 +3,38 @@ info:
   title: Car Dealership API
   version: 1.0.0
 paths:
+  /api/dummyData/:
+    get:
+      tags:
+        - Dummy
+      summary: Fill With Dummy
+      responses:
+        "200":
+          description: ok
+  /api/dummyData/info:
+    get:
+      tags:
+        - Dummy
+      summary: Get Info Page
+      description: Retrieve the info page HTML
+      responses:
+        "200":
+          description: OK
+          content:
+            text/html:
+              schema:
+                type: string
   /api/admins:
     get:
+      tags:
+        - Admin
       summary: Get all admins
       responses:
         "200":
           description: OK
     post:
+      tags:
+        - Admin
       summary: Create an admin
       requestBody:
         content:
@@ -24,52 +49,172 @@ paths:
       responses:
         "200":
           description: OK
-  /api/admins/{adminId}:
+  /api/cars:
     get:
-      summary: Get an admin by ID
-      parameters:
-        - in: path
-          name: adminId
-          schema:
-            type: string
-          required: true
+      tags:
+        - Cars
+      summary: Get all cars
       responses:
-        "200":
-          description: OK
-        "404":
-          description: Admin not found
-    put:
-      summary: Update an admin
-      parameters:
-        - in: path
-          name: adminId
+        200:
+          description: Successful operation
           schema:
-            type: string
-          required: true
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                password:
-                  type: string
-      responses:
-        "200":
-          description: OK
-    delete:
-      summary: Delete an admin
+            type: object
+            properties:
+              success:
+                type: boolean
+              cars:
+                type: array
+                items:
+                  # $ref: "#/definitions/Car"
+  /api/cars/{carId}:
+    get:
+      tags:
+        - Cars
+      summary: Get a car by ID
       parameters:
-        - in: path
-          name: adminId
-          schema:
-            type: string
+        - name: carId
+          in: path
           required: true
+          type: string
       responses:
-        "200":
-          description: OK
+        200:
+          description: Successful operation
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+              car:
+                $ref: "#/definitions/Car"
+  /api/cars/dealership:
+    get:
+      tags:
+        - Cars
+      summary: Get all cars of a dealership
+      responses:
+        200:
+          description: Successful operation
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+              cars:
+                type: array
+                items:
+                  # $ref: "#/definitions/Car"
+  /api/cars/dealership/{dealershipId}:
+    get:
+      tags:
+        - Cars
+      summary: Get all cars of a dealership by ID
+      parameters:
+        - name: dealershipId
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: Successful operation
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+              cars:
+                type: array
+                items:
+                  # $ref: "#/definitions/Car"
+  /api/cars/dealership/{dealershipId}/sold:
+    get:
+      tags:
+        - Cars
+      summary: Get sold cars of a dealership by ID
+      parameters:
+        - name: dealershipId
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: Successful operation
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+              cars:
+                type: array
+                items:
+                  # $ref: "#/definitions/Car"
+  definitions:
+    Car:
+      type: object
+      properties:
+        car_id:
+          type: string
+        type:
+          type: string
+        name:
+          type: string
+        model:
+          type: string
+        car_info:
+          type: object
+  # /api/admins/{adminId}:
+  #   get:
+  #     tags:
+  #       - Admin
+  #     summary: Get an admin by ID
+  #     parameters:
+  #       - in: path
+  #         name: adminId
+  #         schema:
+  #           type: string
+  #         required: true
+  #     responses:
+  #       "200":
+  #         description: OK
+  #       "404":
+  #         description: Admin not found
+  #   put:
+  #     tags:
+  #       - Admin
+  #     summary: Update an admin
+  #     parameters:
+  #       - in: path
+  #         name: adminId
+  #         schema:
+  #           type: string
+  #         required: true
+  #     requestBody:
+  #       content:
+  #         application/json:
+  #           schema:
+  #             type: object
+  #             properties:
+  #               password:
+  #                 type: string
+  #     responses:
+  #       "200":
+  #         description: OK
+  #   delete:
+  #     tags:
+  #       - Admin
+  #     summary: Delete an admin
+  #     parameters:
+  #       - in: path
+  #         name: adminId
+  #         schema:
+  #           type: string
+  #         required: true
+  #     responses:
+  #       "200":
+  #         description: OK
   /api/users/register:
     post:
+      tags:
+        - User
       summary: Register a new user
       description: Create a new user with the provided information
       requestBody:
@@ -116,14 +261,97 @@ paths:
           description: User registered successfully
         "500":
           description: Internal server error
+  /api/users/login:
+    post:
+      tags:
+        - User
+      summary: User login
+      description: Login with user credentials
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_email:
+                  type: string
+                  format: email
+                  description: Email address of the user
+                password:
+                  type: string
+                  description: User password
+      responses:
+        "200":
+          description: Successful login
+        "400":
+          description: Invalid username or password
+        "404":
+          description: User not found
+  /api/users/password/forgot:
+    post:
+      tags:
+        - User
+      summary: Forgot Password
+      description: Send a reset password token to the user's email
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_email:
+                  type: string
+                  description: User's email address
+      responses:
+        "200":
+          description: Reset password token sent successfully
+        "400":
+          description: Invalid request or user not found
+        "500":
+          description: Internal server error
+  /api/users/password/reset/{token}:
+    put:
+      tags:
+        - User
+      summary: Reset user's password
+      parameters:
+        - in: path
+          name: token
+          schema:
+            type: string
+          required: true
+        - in: body
+          name: body
+          description: New password
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  password:
+                    type: string
+      responses:
+        "200":
+          description: Password reset successfully
+        "400":
+          description: Invalid token
+        "404":
+          description: User not found
   /api/users/cars:
     get:
+      tags:
+        - User
       summary: Get all cars
       responses:
         "200":
           description: OK
   /api/users/dealerships/{dealershipId}/cars:
     get:
+      tags:
+        - User
       summary: Get all cars in a dealership
       parameters:
         - in: path
@@ -136,6 +364,8 @@ paths:
           description: OK
   /api/users/cars/{carId}/dealerships:
     get:
+      tags:
+        - User
       summary: Get dealerships with a certain car
       parameters:
         - in: path
@@ -148,12 +378,16 @@ paths:
           description: OK
   /api/users/vehicles:
     get:
+      tags:
+        - User
       summary: Get all vehicles owned by the user
       responses:
         "200":
           description: OK
   /api/users/dealerships/range/{userLocation}:
     get:
+      tags:
+        - User
       summary: Get dealerships within a certain range based on user location
       parameters:
         - in: path
@@ -166,6 +400,8 @@ paths:
           description: OK
   /api/users/cars/{carId}/deals:
     get:
+      tags:
+        - User
       summary: Get all deals on a certain car
       parameters:
         - in: path
@@ -178,6 +414,8 @@ paths:
           description: OK
   /api/users/dealerships/{dealershipId}/deals:
     get:
+      tags:
+        - User
       summary: Get all deals from a certain dealership
       parameters:
         - in: path
@@ -190,6 +428,8 @@ paths:
           description: OK
   /api/users/cars/{carId}/buy:
     post:
+      tags:
+        - User
       summary: Allow user to buy a car after a deal is made
       parameters:
         - in: path
@@ -208,42 +448,199 @@ paths:
       responses:
         "200":
           description: OK
-  /api/dealerships/cars:
-    get:
-      summary: Get all cars
-      responses:
-        "200":
-          description: OK
+  #########################
+  /api/dealership/register:
     post:
-      summary: Add cars to dealership
+      tags:
+        - Dealerships
+      summary: Register a new dealership
       parameters:
-        - in: path
-          name: dealershipId
-          schema:
-            type: string
+        - name: body
+          in: body
           required: true
+          schema:
+            type: object
+            properties:
+              dealership_email:
+                type: string
+              dealership_name:
+                type: string
+              dealership_location:
+                type: string
+              password:
+                type: string
+      responses:
+        201:
+          description: Successful registration
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+              message:
+                type: string
+              dealer:
+
+        400:
+          description: Bad request
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+              message:
+                type: string
+  /api/dealership/login:
+    post:
+      tags:
+        - Dealerships
+      summary: Dealership login
+      description: Login with dealer credentials
       requestBody:
+        required: true
         content:
           application/json:
             schema:
               type: object
               properties:
-                car:
-                  type: object
-                  properties:
-                    car_id:
-                      type: string
-                    type:
-                      type: string
-                    name:
-                      type: string
-                    model:
-                      type: string
+                user_email:
+                  type: string
+                  format: email
+                  description: Email address of the dealer
+                password:
+                  type: string
+                  description: Dealer password
       responses:
         "200":
-          description: OK
+          description: Successful login
+        "400":
+          description: Invalid username or password
+        "404":
+          description: User not found
+  /api/dealership/password/forgot:
+    post:
+      tags:
+        - Dealerships
+      summary: Forgot Password
+      description: Send a reset password token to the dealer's email
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_email:
+                  type: string
+                  description: Dealer's email address
+      responses:
+        "200":
+          description: Reset password token sent successfully
+        "400":
+          description: Invalid request or user not found
+        "500":
+          description: Internal server error
+  /api/dealership/password/reset/{token}:
+    put:
+      tags:
+        - Dealerships
+      summary: Reset dealer's password
+      parameters:
+        - in: path
+          name: token
+          schema:
+            type: string
+          required: true
+        - in: body
+          name: body
+          description: New password
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  password:
+                    type: string
+      responses:
+        "200":
+          description: Password reset successfully
+        "400":
+          description: Invalid token
+        "404":
+          description: User not found
+  /api/vehicle/new:
+    post:
+      tags:
+        - Dealerships
+      summary: Create a new vehicle
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              type:
+                type: string
+              name:
+                type: string
+              model:
+                type: string
+              car_info:
+                type: object
+      responses:
+        200:
+          description: Successful operation
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+              car:
+                # $ref: "#/definitions/Car"
+  # /api/dealerships/cars:
+  #   get:
+  #     tags:
+  #       - Dealerships
+  #     summary: Get all cars
+  #     responses:
+  #       "200":
+  #         description: OK
+  #   post:
+  #     tags:
+  #       - Dealerships
+  #     summary: Add cars to dealership
+  #     parameters:
+  #       - in: path
+  #         name: dealershipId
+  #         schema:
+  #           type: string
+  #         required: true
+  #     requestBody:
+  #       content:
+  #         application/json:
+  #           schema:
+  #             type: object
+  #             properties:
+  #               car:
+  #                 type: object
+  #                 properties:
+  #                   car_id:
+  #                     type: string
+  #                   type:
+  #                     type: string
+  #                   name:
+  #                     type: string
+  #                   model:
+  #                     type: string
+  #     responses:
+  #       "200":
+  #         description: OK
   /api/dealerships/deals:
     get:
+      tags:
+        - Dealerships
       summary: Get deals provided by dealership
       parameters:
         - in: path
@@ -255,6 +652,8 @@ paths:
         "200":
           description: OK
     post:
+      tags:
+        - Dealerships
       summary: Add deals to dealership
       parameters:
         - in: path
@@ -280,6 +679,8 @@ paths:
           description: OK
   /api/dealerships/sold-vehicles:
     get:
+      tags:
+        - Dealerships
       summary: Get vehicles sold by dealership
       parameters:
         - in: path
@@ -291,6 +692,8 @@ paths:
         "200":
           description: OK
     post:
+      tags:
+        - Dealerships
       summary: Add new vehicle to the list of sold vehicles
       parameters:
         - in: path

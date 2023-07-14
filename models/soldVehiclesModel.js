@@ -15,12 +15,12 @@ const createSoldVehiclesCollection = async () => {
           bsonType: "object",
           required: ["vehicle_id", "car_id"],
           properties: {
-            vehicle_id: { bsonType: "string" },
+            // vehicle_id: { bsonType: "string" },
             car_id: { bsonType: "string" },
-            vehicle_info: { bsonType: "object" }
-          }
-        }
-      }
+            vehicle_info: { bsonType: "object" },
+          },
+        },
+      },
     });
   }
 };
@@ -28,9 +28,33 @@ const createSoldVehiclesCollection = async () => {
 export const SoldVehicles = {
   createSoldVehiclesCollection,
   createSoldVehicle: async (soldVehicle) => {
-    const database = getDatabase();
-    const soldVehiclesCollection = database.collection(soldVehiclesCollectionName);
-    await soldVehiclesCollection.insertOne(soldVehicle);
+    try {
+      const database = await getDatabase();
+      const soldVehiclesCollection = await database.collection(
+        soldVehiclesCollectionName
+      );
+      await soldVehiclesCollection.insertOne(soldVehicle);
+    } catch (error) {
+      console.error("Error creating SoldVehicles:", error);
+      throw new Error("Failed to create SoldVehicles");
+    }
+  },
+  getSoldCarsByDealership: async (dealershipId) => {
+    try {
+      const database = await getDatabase();
+      const soldVehiclesCollection = await database.collection(
+        soldVehiclesCollectionName
+      );
+
+      const soldCars = await soldVehiclesCollection.find({
+        dealership_id: dealershipId,
+      }).toArray();
+
+      return soldCars;
+    } catch (error) {
+      console.error("Error retrieving sold cars:", error);
+      throw new Error("Failed to retrieve sold cars");
+    }
   },
 };
 

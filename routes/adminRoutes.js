@@ -1,5 +1,7 @@
-import express  from "express";
+import express from "express";
 
 const router = express.Router();
 
-router.route("/admin").post()
+router.route("/register").post();
+
+export default router;

@@ -15,7 +15,7 @@ const createCarsCollection = async () => {
           bsonType: "object",
           required: ["car_id", "type", "name", "model"],
           properties: {
-            car_id: { bsonType: "string" },
+            // car_id: { bsonType: "string" },
             type: { bsonType: "string" },
             name: { bsonType: "string" },
             model: { bsonType: "string" },
@@ -31,9 +31,48 @@ const createCarsCollection = async () => {
 export const Cars = {
   createCarsCollection,
   createCar: async (car) => {
-    const database = getDatabase();
-    const carsCollection = database.collection(carsCollectionName);
-    await carsCollection.insertOne(car);
+    try {
+      const database = await getDatabase();
+      const carsCollection = await database.collection(carsCollectionName);
+      await carsCollection.insertOne(car);
+      return car;
+    } catch (error) {
+      console.error("Error creating user:", error);
+      throw new Error("Failed to create user");
+    }
+  },
+  findAll: async () => {
+    try {
+      const database = await getDatabase();
+      const carsCollection = await database.collection(carsCollectionName);
+      const cars = await carsCollection.find().toArray();
+      return cars;
+    } catch (error) {
+      console.error("Error retrieving cars:", error);
+      throw new Error("Failed to retrieve cars");
+    }
+  },
+  findById: async (carId) => {
+    try {
+      const database = await getDatabase();
+      const carsCollection = await database.collection(carsCollectionName);
+      const car = await carsCollection.findOne({ _id: carId });
+      return car;
+    } catch {
+      console.log("Error retrieving cars:", error);
+      throw new Error("Failed to retrieve the car");
+    }
+  },
+  findByDealershipId: async (dealershipId) => {
+    try {
+      const database = await getDatabase();
+      const carsCollection = await database.collection(carsCollectionName);
+      const cars = await carsCollection.find({ dealership_id: dealershipId }).toArray();
+      return cars;
+    } catch (error) {
+      console.error("Error retrieving cars:", error);
+      throw new Error("Failed to retrieve cars");
+    }
   },
 };
 

@@ -28,9 +28,26 @@ const createAdminCollection = async () => {
 export const Admin = {
   createAdminCollection,
   createAdmin: async (admin) => {
-    const database = getDatabase();
-    const adminCollection = database.collection(adminCollectionName);
-    await adminCollection.insertOne(admin);
+    try {
+      const database = await getDatabase();
+      const adminCollection = await database.collection(adminCollectionName);
+      await adminCollection.insertOne(admin);
+    } catch (error) {
+      console.error("Error retrieving user by id:", error);
+      throw new Error("Failed to retrieve user by id");
+    }
+  },
+  getAdminByID: async (email) => {
+    try {
+      const database = await getDatabase();
+      const userCollection = await database.collection(userCollectionName);
+
+      const user = await userCollection.findOne({ admin_id: email });
+      return user;
+    } catch (error) {
+      console.error("Error retrieving user by email:", error);
+      throw new Error("Failed to retrieve user by email");
+    }
   },
 };
 export default Admin;
