@@ -1,5 +1,5 @@
-import ErrorHandler from "../middleware/error";
-import Admin from "../models/adminModel";
+import ErrorHandler from "../middleware/error.js";
+import Admin from "../models/adminModel.js";
 
 export const registerAdmin = async (req, res, next) => {
   try {
