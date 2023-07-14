@@ -22,4 +22,4 @@ SMPT_SERVICE=gmail
 ## npm run dev
 # API - Documents
 ## http://localhost:4000/api-docs/
-## [http://www.localhost.com](http://localhost:4000/api/dummyData/info)http://localhost:4000/api/dummyData/info
+## http://localhost:4000/api/dummyData/info
