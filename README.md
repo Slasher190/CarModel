@@ -19,7 +19,8 @@ SMPT_PORT=465
 SMPT_SERVICE=gmail
 
 ```
-## npm run dev
+### npm install
+### npm run dev
 # API - Documents
 ## http://localhost:4000/api-docs/
 ## http://localhost:4000/api/dummyData/info
